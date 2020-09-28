@@ -152,7 +152,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Lab_1_Sem_3.cpp" />
   </ItemGroup>
   <ItemGroup>
