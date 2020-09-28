@@ -1,5 +1,6 @@
 ﻿#include "Header.h"
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+//#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest.h"
 
 
@@ -135,40 +136,112 @@ TEST_CASE("Test on strings")
 
 TEST_CASE("Test on classes")
 {
+	auto DLL = new Doubly_Linked_List <Dice>;
 
+	std::vector <double> probs;
+
+	probs.push_back(0.25);
+	probs.push_back(0.25);
+	probs.push_back(0.3);
+	probs.push_back(0.2);
+
+	Dice temp(4, probs);
+
+	DLL->addLast(temp);
+
+
+
+	probs.assign(0, 0);
+
+	probs.push_back(0.4);
+	probs.push_back(0.6);
+
+	Dice temp1(2, probs);
+
+	DLL->addLast(temp1);
+
+
+
+	probs.assign(0, 0);
+
+	probs.push_back(0.15);
+	probs.push_back(0.3);
+	probs.push_back(0.15);
+	probs.push_back(0.1);
+	probs.push_back(0.2);
+	probs.push_back(0.1);
+
+	Dice temp2(6, probs);
+
+	DLL->addLast(temp2);
+
+
+
+	//std::cout << *DLL << std::endl;
+	
+	SUBCASE("Test on correctness of adding")
+	{
+		std::stringstream ss;
+		ss << *DLL;
+		CHECK("[(1 = 0.25, 2 = 0.25, 3 = 0.3, 4 = 0.2) (1 = 0.4, 2 = 0.6) (1 = 0.15, 2 = 0.3, 3 = 0.15, 4 = 0.1, 5 = 0.2, 6 = 0.1)]" == ss.str());
+	}
+
+	SUBCASE("Test on correctness of degressive Shell sort")
+	{
+		ShellSort(DLL, DLL->size(), true);
+
+		std::stringstream ss;
+		ss << *DLL;
+
+		CHECK("[(1 = 0.15, 2 = 0.3, 3 = 0.15, 4 = 0.1, 5 = 0.2, 6 = 0.1) (1 = 0.25, 2 = 0.25, 3 = 0.3, 4 = 0.2) (1 = 0.4, 2 = 0.6)]" == ss.str());
+	}
+
+	SUBCASE("Test on correctness of increasing Merge sort")
+	{
+		MergeSort(0, DLL->size() - 1, DLL->size(), DLL, false);
+
+		std::stringstream ss;
+		ss << *DLL;
+
+		CHECK("[(1 = 0.4, 2 = 0.6) (1 = 0.25, 2 = 0.25, 3 = 0.3, 4 = 0.2) (1 = 0.15, 2 = 0.3, 3 = 0.15, 4 = 0.1, 5 = 0.2, 6 = 0.1)]" == ss.str());
+	}
 }
 
 
 
 /*int main()
 {
-	int ans = 0;
+	std::vector <float> b;
 
-	while (ans != 4)
-	{
-		ans = menu();
+	b.push_back(0.25);
+	b.push_back(0.25);
+	b.push_back(0.3);
+	b.push_back(0.2);
 
-		switch (ans)
-		{
-		case 0: 
-			IntMain();
+	Dice a(4, b);
 
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			std::cout << "CYA!" << std::endl;
-			break;
-		default:
-			break;
-		}
-	}
-
-	system("pause");
+	std::cout << a;
 
 	return 0;
 }*/
+
+int main(int argc, char** argv) 
+{
+	//doctest stuff
+	doctest::Context context;
+	context.applyCommandLine(argc, argv);
+	int res = context.run();
+	if (context.shouldExit())
+		return res;
+
+
+
+
+
+
+
+	//my return code
+	int client_stuff_return_code = 0;
+
+	return res + client_stuff_return_code;
+}
