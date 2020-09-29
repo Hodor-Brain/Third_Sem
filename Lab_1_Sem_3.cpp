@@ -211,36 +211,34 @@ TEST_CASE("Test list on class")
 
 TEST_CASE("Test functions of class")
 {
-	auto DLL = new Doubly_Linked_List <Dice>;
-
-	std::vector <double> probs;
-
-	probs.push_back(0.3);
-	probs.push_back(0.7);
-
-	Dice temp(2, probs);
-
-	DLL->addLast(temp);
-
-
-
-	probs.assign(0, 0);
-
-	probs.push_back(0.2);
-	probs.push_back(0.1);
-	probs.push_back(0.5);
-	probs.push_back(0.2);
-
-	Dice temp1(4, probs);
-
-	DLL->addLast(temp1);
-
-
-
-	//std::cout << *DLL << std::endl;
-
 	SUBCASE("Test finding of all possible sums and their posibilities")
 	{
+		auto DLL = new Doubly_Linked_List <Dice>;
+
+		std::vector <double> probs;
+
+		probs.push_back(0.3);
+		probs.push_back(0.7);
+
+		Dice temp(2, probs);
+
+		DLL->addLast(temp);
+
+
+
+		probs.assign(0, 0);
+
+		probs.push_back(0.2);
+		probs.push_back(0.1);
+		probs.push_back(0.5);
+		probs.push_back(0.2);
+
+		Dice temp1(4, probs);
+
+		DLL->addLast(temp1);
+
+
+
 		std::vector<int> sums;
 		std::vector<double> probabs;
 
@@ -269,15 +267,16 @@ TEST_CASE("Test functions of class")
 		}
 
 		CHECK("2 = 0.06  3 = 0.17  4 = 0.22  5 = 0.41  6 = 0.14  " == str);
-	}
 
-	delete DLL;
+		delete DLL;
+	}
 
 	SUBCASE("Test of supporting of other face numbering schemes")
 	{
 		auto DLL = new Doubly_Linked_List <Dice>;
 
 		std::vector<int> faces;
+		std::vector <double> probs;
 
 		probs.assign(0, 0);
 		
@@ -361,6 +360,80 @@ TEST_CASE("Test functions of class")
 
 			CHECK(SumOfProbabilities == 1);
 		}
+	}
+	SUBCASE("Test comparing of two probabilities of different sets by the current sum of numbers")
+	{
+		auto DLL1 = new Doubly_Linked_List <Dice>;
+
+		std::vector<int> faces;
+		std::vector <double> probs;
+
+		probs.push_back(0.4);
+		probs.push_back(0.6);
+
+		faces.push_back(3);
+		faces.push_back(1);
+
+		Dice temp(2, faces, probs);
+
+		DLL1->addLast(temp);
+
+
+
+		probs.assign(0, 0);
+		faces.assign(0, 0);
+
+		probs.push_back(0.2);
+		probs.push_back(0.8);
+
+		faces.push_back(1);
+		faces.push_back(2);
+
+		Dice temp1(2, faces, probs);
+
+		DLL1->addLast(temp1);
+
+
+
+		auto DLL2 = new Doubly_Linked_List <Dice>;
+
+		probs.assign(0, 0);
+		faces.assign(0, 0);
+
+		probs.push_back(0.5);
+		probs.push_back(0.5);
+
+		faces.push_back(1);
+		faces.push_back(4);
+
+		Dice temp2(2, faces, probs);
+
+		DLL2->addLast(temp2);
+
+
+
+		probs.assign(0, 0);
+		faces.assign(0, 0);
+
+		probs.push_back(0.7);
+		probs.push_back(0.3);
+
+		faces.push_back(2);
+		faces.push_back(3);
+
+		Dice temp3(2, faces, probs);
+
+		DLL2->addLast(temp3);
+
+
+
+		std::string str1 = ComparingTwoSetsBySum(DLL1, DLL2, 3);
+
+		CHECK("First set probability (a) = 0.48, Second set probability (b) = 0.35, a > b" == str1);
+
+		std::string str2 = ComparingTwoSetsBySum(DLL1, DLL2, 4);
+
+		CHECK("First set probability (a) = 0.08, Second set probability (b) = 0.15, a < b" == str2);
 	}
 }
 

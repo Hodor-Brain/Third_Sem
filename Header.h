@@ -612,3 +612,81 @@ std::pair<std::vector<int>, std::vector<double>> FindAllSumsAndProbs(Node<Dice>*
 
 	return std::make_pair(sums, probabs);
 }
+
+
+
+std::string ComparingTwoSetsBySum(Doubly_Linked_List<Dice>* a, Doubly_Linked_List<Dice>* b, int sum)
+{
+	std::vector<int> sums_a;
+	std::vector<double> probabs_a;
+
+	std::vector<int> tempsums_a(a->size() - 1);
+	std::vector<double> tempprobabs_a(a->size() - 1);
+
+	std::pair<std::vector<int>, std::vector<double>> mypair_a = std::make_pair(sums_a, probabs_a);
+
+
+
+	std::vector<int> sums_b;
+	std::vector<double> probabs_b;
+
+	std::vector<int> tempsums_b(b->size() - 1);
+	std::vector<double> tempprobabs_b(b->size() - 1);
+
+	std::pair<std::vector<int>, std::vector<double>> mypair_b = std::make_pair(sums_b, probabs_b);
+
+	mypair_a = FindAllSumsAndProbs(a->get_beg(), 0, sums_a, probabs_a, tempsums_a, tempprobabs_a);
+	mypair_b = FindAllSumsAndProbs(b->get_beg(), 0, sums_b, probabs_b, tempsums_b, tempprobabs_b);
+
+	bool IsSumExist = false;
+
+	double a_prob = 0;
+	double b_prob = 0;
+
+	for (int i = 0; i < mypair_a.first.size(); i++)
+	{
+		for (int j = 0; j < mypair_b.first.size(); j++)
+		{
+			if (mypair_b.first[j] == sum && mypair_a.first[i] == sum)
+			{
+				IsSumExist = true;
+				a_prob = mypair_a.second[i];
+				b_prob = mypair_b.second[j];
+				break;
+			}
+		}
+		if (IsSumExist)
+		{
+			break;
+		}
+	}
+
+	if (IsSumExist)
+	{
+		std::ostringstream strss;
+		strss << a_prob;
+		std::ostringstream strs;
+		strs << b_prob;
+
+		if (a_prob < b_prob)
+		{
+			std::string str = "First set probability (a) = " + strss.str() + ", Second set probability (b) = " + strs.str() + ", a < b";
+			return str;
+		}
+		else if (a_prob > b_prob)
+		{
+			std::string str = "First set probability (a) = " + strss.str() + ", Second set probability (b) = " + strs.str() + ", a > b";
+			return str;
+		}
+		else
+		{
+			std::string str = "First set probability (a) = Second set probability (b) = " + strs.str();
+			return str;
+		}
+	}
+	else
+	{
+		std::string str = "Such a sum doesn't exist in the one of sets";
+		return str;
+	}
+}
