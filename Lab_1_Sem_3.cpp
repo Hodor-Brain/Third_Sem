@@ -5,7 +5,7 @@
 
 
 
-TEST_CASE("Test on integers")
+TEST_CASE("Test list on integers")
 {
 	auto DLL = new Doubly_Linked_List <int>;
 
@@ -47,7 +47,7 @@ TEST_CASE("Test on integers")
 
 
 
-TEST_CASE("Test on doubles")
+TEST_CASE("Test list on doubles")
 {
 	auto DLL = new Doubly_Linked_List <double>;
 
@@ -90,8 +90,7 @@ TEST_CASE("Test on doubles")
 
 
 
-
-TEST_CASE("Test on strings")
+TEST_CASE("Test list on strings")
 {
 	auto DLL = new Doubly_Linked_List <std::string>;
 
@@ -133,8 +132,7 @@ TEST_CASE("Test on strings")
 
 
 
-
-TEST_CASE("Test on classes")
+TEST_CASE("Test list on class")
 {
 	auto DLL = new Doubly_Linked_List <Dice>;
 
@@ -176,13 +174,13 @@ TEST_CASE("Test on classes")
 	DLL->addLast(temp2);
 
 
-
-	//std::cout << *DLL << std::endl;
 	
 	SUBCASE("Test on correctness of adding")
 	{
+		//std::cout << *DLL << std::endl;
 		std::stringstream ss;
 		ss << *DLL;
+
 		CHECK("[(1 = 0.25, 2 = 0.25, 3 = 0.3, 4 = 0.2) (1 = 0.4, 2 = 0.6) (1 = 0.15, 2 = 0.3, 3 = 0.15, 4 = 0.1, 5 = 0.2, 6 = 0.1)]" == ss.str());
 	}
 
@@ -205,25 +203,168 @@ TEST_CASE("Test on classes")
 
 		CHECK("[(1 = 0.4, 2 = 0.6) (1 = 0.25, 2 = 0.25, 3 = 0.3, 4 = 0.2) (1 = 0.15, 2 = 0.3, 3 = 0.15, 4 = 0.1, 5 = 0.2, 6 = 0.1)]" == ss.str());
 	}
+
+	delete DLL;
 }
 
 
 
-/*int main()
+TEST_CASE("Test functions of class")
 {
-	std::vector <float> b;
+	auto DLL = new Doubly_Linked_List <Dice>;
 
-	b.push_back(0.25);
-	b.push_back(0.25);
-	b.push_back(0.3);
-	b.push_back(0.2);
+	std::vector <double> probs;
 
-	Dice a(4, b);
+	probs.push_back(0.3);
+	probs.push_back(0.7);
 
-	std::cout << a;
+	Dice temp(2, probs);
 
-	return 0;
-}*/
+	DLL->addLast(temp);
+
+
+
+	probs.assign(0, 0);
+
+	probs.push_back(0.2);
+	probs.push_back(0.1);
+	probs.push_back(0.5);
+	probs.push_back(0.2);
+
+	Dice temp1(4, probs);
+
+	DLL->addLast(temp1);
+
+
+
+	//std::cout << *DLL << std::endl;
+
+	SUBCASE("Test finding of all possible sums and their posibilities")
+	{
+		std::vector<int> sums;
+		std::vector<double> probabs;
+
+		std::vector<int> tempsums(DLL->size() - 1);
+		std::vector<double> tempprobabs(DLL->size() - 1);
+
+		std::pair<std::vector<int>, std::vector<double>> mypair = std::make_pair(sums, probabs);
+
+		mypair = FindAllSumsAndProbs(DLL->get_beg(), 0, sums, probabs, tempsums, tempprobabs);
+
+		std::string str;
+
+		for (int i = 0; i < mypair.first.size(); i++)
+		{
+			std::ostringstream strss;
+			strss << mypair.first[i];
+
+			str += strss.str();
+			str += " = ";
+
+			std::ostringstream strs;
+			strs << mypair.second[i];
+
+			str += strs.str();
+			str += "  ";
+		}
+
+		CHECK("2 = 0.06  3 = 0.17  4 = 0.22  5 = 0.41  6 = 0.14  " == str);
+	}
+
+	delete DLL;
+
+	SUBCASE("Test of supporting of other face numbering schemes")
+	{
+		auto DLL = new Doubly_Linked_List <Dice>;
+
+		std::vector<int> faces;
+
+		probs.assign(0, 0);
+		
+		probs.push_back(0.4);
+		probs.push_back(0.3);
+		probs.push_back(0.1);
+		probs.push_back(0.2);
+
+		faces.push_back(4);
+		faces.push_back(2);
+		faces.push_back(7);
+		faces.push_back(1);
+
+		Dice temp3(4, faces, probs);
+
+		DLL->addLast(temp3);
+
+
+
+		probs.assign(0, 0);
+
+		probs.push_back(0.4);
+		probs.push_back(0.6);
+
+		faces.assign(0, 0);
+
+		faces.push_back(3);
+		faces.push_back(1);
+
+		Dice temp4(2, faces, probs);
+
+		DLL->addLast(temp4);
+
+
+
+		probs.assign(0, 0);
+
+		probs.push_back(0.1);
+		probs.push_back(0.2);
+		probs.push_back(0.1);
+		probs.push_back(0.15);
+		probs.push_back(0.3);
+		probs.push_back(0.15);
+
+		faces.assign(0, 0);
+
+		faces.push_back(5);
+		faces.push_back(2);
+		faces.push_back(8);
+		faces.push_back(4);
+		faces.push_back(1);
+		faces.push_back(3);
+
+		Dice temp5(6, faces, probs);
+
+		DLL->addLast(temp5);
+
+		std::stringstream ss;
+		ss << *DLL;
+		CHECK("[(4 = 0.4, 2 = 0.3, 7 = 0.1, 1 = 0.2) (3 = 0.4, 1 = 0.6) (5 = 0.1, 2 = 0.2, 8 = 0.1, 4 = 0.15, 1 = 0.3, 3 = 0.15)]" == ss.str());
+
+
+		SUBCASE("Test on finding sums and probabilities with other numbering")
+		{
+			std::vector<int> sums;
+			std::vector<double> probabs;
+
+			std::vector<int> tempsums(DLL->size() - 1);
+			std::vector<double> tempprobabs(DLL->size() - 1);
+
+			std::pair<std::vector<int>, std::vector<double>> mypair = std::make_pair(sums, probabs);
+
+			mypair = FindAllSumsAndProbs(DLL->get_beg(), 0, sums, probabs, tempsums, tempprobabs);
+
+			double SumOfProbabilities = 0;
+
+			for (int i = 0; i < mypair.second.size(); i++)
+			{
+				SumOfProbabilities += mypair.second[i];
+			}
+
+			CHECK(SumOfProbabilities == 1);
+		}
+	}
+}
+
+
 
 int main(int argc, char** argv) 
 {
